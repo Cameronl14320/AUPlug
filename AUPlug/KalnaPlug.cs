@@ -9,7 +9,7 @@ using Kalna.Config;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace Kalna
+namespace Kalna.Plugin
 {
     /// <summary>
     ///     The metadata information of your plugin, this is required.
@@ -19,12 +19,12 @@ namespace Kalna
         name: "Kalna",
         author: "Kalna",
         version: "0.0.1")]
-    public class Kalna : PluginBase // This is also required ": PluginBase".
+    public class KalnaPlug : PluginBase // This is also required ": PluginBase".
     {
         /// <summary>
         ///     A logger that works seamlessly with the server.
         /// </summary>
-        private readonly ILogger<Kalna> _logger;
+        private readonly ILogger<KalnaPlug> _logger;
         private readonly IEventManager _eventManager;
         private IDisposable _unregister;
 
@@ -34,7 +34,7 @@ namespace Kalna
         /// <summary>
         ///     The constructor of the plugin. There are a few parameters you can add here and they
         ///     will be injected automatically by the server, two examples are used here.
-        public Kalna(ILogger<Kalna> logger, IEventManager eventManager, IClientManager clientManager)
+        public KalnaPlug(ILogger<KalnaPlug> logger, IEventManager eventManager)
         {
             _logger = logger;
             _eventManager = eventManager;

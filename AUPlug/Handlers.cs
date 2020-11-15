@@ -4,9 +4,11 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System.Collections;
 using Kalna.Player;
+using Kalna.Plugin;
 using Impostor.Api.Net.Inner.Objects.Components;
 using Impostor.Api.Net;
 using System.Collections.Generic;
+using System;
 
 namespace Kalna.Handlers
 {
@@ -18,10 +20,10 @@ namespace Kalna.Handlers
     /// </summary>
     public class GameEventListener : IEventListener
     {
-        private readonly ILogger<Kalna> _logger;
+        private readonly ILogger<KalnaPlug> _logger;
         private List<PlayerData> gameInstancePlayers;
 
-        public GameEventListener(ILogger<Kalna> logger)
+        public GameEventListener(ILogger<KalnaPlug> logger)
         {
             _logger = logger;
         }
@@ -55,7 +57,6 @@ namespace Kalna.Handlers
 
                 gameInstancePlayers.Add(new PlayerData(isImpostor, false, player));
 
-                IInnerCustomNetworkTransform playerLocation = player.Character.NetworkTransform;
             }
 
         }
@@ -108,19 +109,38 @@ namespace Kalna.Handlers
 
         }
 
-        public void checkCollision(IClientPlayer a, IClientPlayer b)
+        public Boolean CheckCollision(IClientPlayer a, IClientPlayer b)
         {
             var characterA = a.Character;
-
             var characterB = b.Character;
+            if (a.Equals(b))
+            {
+                return false;
+            }
+
             if (characterA.NetworkTransform.Equals(characterB.NetworkTransform))
             {
+                PlayerData playerA = null;
+                PlayerData playerB = null;
 
-                if (gameInstancePlayers[aIndex]._isImposter)
-                {
-
+                foreach(PlayerData p in gameInstancePlayers) {
+                    if (p.matchPlayer(a))
+                    {
+                        playerA = p;
+                    } else if (p.matchPlayer(b))
+                    {
+                        playerB = p;
+                    }
                 }
+
+                if ((playerA == null || playerB == null) || (playerA.Equals(playerB)))
+                {
+                    return false;
+                }
+
+                return true;
             }
+            return false;
         }
             
     }
